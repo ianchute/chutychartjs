@@ -1,4 +1,4 @@
-/*! ChutyChart v2.0.0 | MIT License */
+/*! ChutyChart v2.0.1 | MIT License */
 /*
  *  ChutyChart v2
  *  A stock data graphing and analysis library.
@@ -645,7 +645,7 @@
   ChutyChart.normalize  = _normaliseData;  // alias for US spelling
 
   /** Version */
-  ChutyChart.version = '2.0.0';
+  ChutyChart.version = '2.0.1';
 
   return ChutyChart;
 

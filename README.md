@@ -6,7 +6,7 @@
 [![bundle size](https://img.shields.io/badge/minified-7.5KB-brightgreen.svg)](https://cdn.jsdelivr.net/npm/chutychart/chutychart-v2.min.js)
 
 A zero-dependency, canvas-based OHLCV candlestick charting library.
-Originally written from scratch by **Ian Herve U. Chu Te** (2016). v2 interface standardized in 2026.
+Originally written from scratch in 2016 (see legacy code — `chutychart.js`). v2 interface standardized in 2026.
 
 ---
 
@@ -420,4 +420,4 @@ When `interpolate: true`, gaps between consecutive trading days are filled with 
 
 ## License
 
-MIT © 2016 Ian Herve U. Chu Te
+MIT © 2016

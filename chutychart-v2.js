@@ -1,8 +1,8 @@
-/*! ChutyChart v2.0.0 | MIT License | Ian Herve U. Chu Te */
+/*! ChutyChart v2.0.0 | MIT License */
 /*
  *  ChutyChart v2
  *  A stock data graphing and analysis library.
- *  Original by: Ian Herve U. Chu Te
+ *  Originally written from scratch in 2016 (see legacy code — chutychart.js)
  *  v2 interface standardization: 2026
  *
  *  CHANGES FROM v1:

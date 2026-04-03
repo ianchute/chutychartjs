@@ -1,5 +1,10 @@
 # ChutyChart
 
+[![npm version](https://img.shields.io/npm/v/chutychart.svg)](https://www.npmjs.com/package/chutychart)
+[![npm downloads](https://img.shields.io/npm/dm/chutychart.svg)](https://www.npmjs.com/package/chutychart)
+[![license](https://img.shields.io/npm/l/chutychart.svg)](./LICENSE)
+[![bundle size](https://img.shields.io/badge/minified-7.5KB-brightgreen.svg)](https://cdn.jsdelivr.net/npm/chutychart/chutychart-v2.min.js)
+
 A zero-dependency, canvas-based OHLCV candlestick charting library.
 Originally written from scratch by **Ian Herve U. Chu Te** (2016). v2 interface standardized in 2026.
 
@@ -26,7 +31,7 @@ Originally written from scratch by **Ian Herve U. Chu Te** (2016). v2 interface 
 
 ```html
 <div id="chart"></div>
-<script src="chutychart-v2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chutychart/chutychart-v2.min.js"></script>
 <script>
   const chart = new ChutyChart({
     container: 'chart',
@@ -48,25 +53,48 @@ Originally written from scratch by **Ian Herve U. Chu Te** (2016). v2 interface 
 
 ## Installation
 
-**Browser (script tag)**
+**npm**
+
+```bash
+npm install chutychart
+```
+
+**CDN (jsDelivr)**
 
 ```html
-<script src="chutychart-v2.js"></script>
+<!-- Latest (recommended) -->
+<script src="https://cdn.jsdelivr.net/npm/chutychart/chutychart-v2.min.js"></script>
+
+<!-- Pinned to a specific version -->
+<script src="https://cdn.jsdelivr.net/npm/chutychart@2.0.0/chutychart-v2.min.js"></script>
+
+<!-- Unminified -->
+<script src="https://cdn.jsdelivr.net/npm/chutychart/chutychart-v2.js"></script>
+```
+
+**CDN (unpkg)**
+
+```html
+<!-- Latest -->
+<script src="https://unpkg.com/chutychart/chutychart-v2.min.js"></script>
+
+<!-- Pinned to a specific version -->
+<script src="https://unpkg.com/chutychart@2.0.0/chutychart-v2.min.js"></script>
 ```
 
 **CommonJS / Node**
 
 ```js
-const ChutyChart = require('./chutychart-v2.js');
+const ChutyChart = require('chutychart');
 ```
 
 **ES module**
 
 ```js
-import ChutyChart from './chutychart-v2.js';
+import ChutyChart from 'chutychart';
 ```
 
-No build step. No npm install. No dependencies. Drop the file in and go.
+No build step required. Zero dependencies. Drop the file in and go.
 
 ---
 

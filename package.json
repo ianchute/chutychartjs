@@ -1,0 +1,39 @@
+{
+  "name": "chutychart",
+  "version": "2.0.0",
+  "description": "Zero-dependency, canvas-based OHLCV candlestick charting library",
+  "main": "chutychart-v2.js",
+  "module": "chutychart-v2.js",
+  "browser": "chutychart-v2.js",
+  "unpkg": "chutychart-v2.min.js",
+  "jsdelivr": "chutychart-v2.min.js",
+  "files": [
+    "chutychart-v2.js",
+    "chutychart-v2.min.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "npx terser chutychart-v2.js -o chutychart-v2.min.js --compress --mangle --comments '/^!/'"
+  },
+  "keywords": [
+    "ohlcv",
+    "candlestick",
+    "chart",
+    "canvas",
+    "stock",
+    "finance",
+    "trading",
+    "ohlc"
+  ],
+  "author": "Ian Herve U. Chu Te",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ianchutechute/chutychartjs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ianchutechute/chutychartjs/issues"
+  },
+  "homepage": "https://github.com/ianchutechute/chutychartjs#readme"
+}

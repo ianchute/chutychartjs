@@ -1,3 +1,4 @@
+/*! ChutyChart v2.0.0 | MIT License | Ian Herve U. Chu Te */
 /*
  *  ChutyChart v2
  *  A stock data graphing and analysis library.

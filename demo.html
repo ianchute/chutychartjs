@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChutyChart v2 — Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #111;
+      color: #eee;
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    header {
+      padding: 18px 24px 14px;
+      border-bottom: 1px solid #333;
+    }
+    header h1 { font-size: 18px; color: #7dd; letter-spacing: 1px; }
+    header p  { color: #888; margin-top: 4px; font-size: 11px; }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 24px;
+      border-bottom: 1px solid #222;
+      align-items: center;
+    }
+    .controls label { color: #aaa; font-size: 11px; display: flex; flex-direction: column; gap: 3px; }
+    .controls input[type=number],
+    .controls select {
+      background: #1e1e1e; border: 1px solid #444; color: #eee;
+      padding: 4px 8px; border-radius: 3px; font-family: inherit; font-size: 12px;
+      width: 90px;
+    }
+    .controls input[type=checkbox] { margin-top: 6px; }
+
+    button {
+      background: #108a93; border: none; color: #fff;
+      padding: 7px 18px; border-radius: 4px; cursor: pointer;
+      font-family: inherit; font-size: 12px; letter-spacing: 0.5px;
+      align-self: flex-end;
+    }
+    button:hover { background: #0d6f77; }
+
+    #chart-wrap {
+      width: 100%;
+      padding: 0;
+    }
+    #chart {
+      width: 100%;
+      height: 400px;
+      position: relative;
+      background: #222;
+    }
+
+    /* ─── Tooltip (from v2 library) ─── */
+    .chutyChartTooltip {
+      position: absolute;
+      background: rgba(0,0,0,0.85);
+      border: 1px solid #444;
+      border-radius: 4px;
+      padding: 6px 10px;
+      pointer-events: none;
+      z-index: 100;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .chutyChartTooltip td { padding: 1px 6px; }
+    .chutyChartTooltip td:first-child { color: #888; }
+    .chutyChartTooltip td:last-child  { color: #eee; text-align: right; }
+
+    .chutyChartTooltip[data-color="#108a93"] td:last-child { color: #3ef2ff; }
+    .chutyChartTooltip[data-color="#ad1d28"] td:last-child { color: #ff6b6b; }
+
+    .api-section {
+      padding: 20px 24px 30px;
+      border-top: 1px solid #222;
+    }
+    .api-section h2 { color: #7dd; font-size: 14px; margin-bottom: 12px; }
+    pre {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #ccc;
+    }
+    .kw  { color: #7dd; }
+    .str { color: #f5c842; }
+    .cm  { color: #666; font-style: italic; }
+    .num { color: #f08a4b; }
+
+    .badge {
+      display: inline-block;
+      background: #1e3a3a;
+      border: 1px solid #108a93;
+      color: #3ef2ff;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .diff-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+    .diff-table th { color: #7dd; padding: 6px 10px; text-align: left; border-bottom: 1px solid #333; }
+    .diff-table td { padding: 5px 10px; border-bottom: 1px solid #1e1e1e; color: #ccc; vertical-align: top; }
+    .diff-table tr:hover td { background: #1a1a1a; }
+    .tag-old { color: #f08a4b; }
+    .tag-new { color: #3ef2ff; }
+    .tag-fix { color: #a8e6a3; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>ChutyChart <span class="badge">v2</span></h1>
+  <p>Canvas-based OHLCV charting library &mdash; standardized API demo</p>
+</header>
+
+<div class="controls">
+  <label>Height (px)
+    <input type="number" id="ctrl-height" value="400" min="200" max="800" step="50">
+  </label>
+  <label>Candle width (px)
+    <input type="number" id="ctrl-cw" value="8" min="2" max="30" step="1">
+  </label>
+  <label>Candles
+    <input type="number" id="ctrl-n" value="260" min="10" max="2600" step="10">
+  </label>
+  <label>Dataset
+    <select id="ctrl-ds">
+      <option value="sine">Sine wave (synthetic)</option>
+      <option value="random">Random walk</option>
+      <option value="trend">Bull trend</option>
+    </select>
+  </label>
+  <label style="flex-direction:row;align-items:center;gap:6px;">
+    <input type="checkbox" id="ctrl-interp"> Interpolate gaps
+  </label>
+  <button id="btn-render">Render</button>
+</div>
+
+<div id="chart-wrap">
+  <div id="chart"></div>
+</div>
+
+<div class="api-section">
+  <h2>v1 → v2 Migration</h2>
+  <table class="diff-table">
+    <tr>
+      <th>Aspect</th>
+      <th class="tag-old">v1 (original)</th>
+      <th class="tag-new">v2 (this file)</th>
+    </tr>
+    <tr>
+      <td>Constructor</td>
+      <td class="tag-old"><code>ChutyChart(id, data, interp, h, w)</code><br>positional args, no return</td>
+      <td class="tag-new"><code>new ChutyChart({ container, data, … })</code><br>named options, returns instance</td>
+    </tr>
+    <tr>
+      <td>Data format</td>
+      <td class="tag-old">Strict <code>{d,o,h,l,c,v}</code> (unix seconds only)</td>
+      <td class="tag-new">Accepts both <code>{d,o,h,l,c,v}</code> <em>and</em> <code>{timestamp,open,high,low,close,volume}</code>; auto-detects ms vs s</td>
+    </tr>
+    <tr>
+      <td>Return value</td>
+      <td class="tag-old"><code>undefined</code></td>
+      <td class="tag-new">Instance with <code>.render()</code>, <code>.update(data)</code>, <code>.destroy()</code>, <code>.getData()</code></td>
+    </tr>
+    <tr>
+      <td>Global state <span class="tag-fix">[bugfix]</span></td>
+      <td class="tag-old"><code>lastMonth</code> / <code>lastWeek</code> are module-level vars — bleed between renders</td>
+      <td class="tag-new">Scoped as refs per render call — multiple charts on one page work correctly</td>
+    </tr>
+    <tr>
+      <td>Canvas patch <span class="tag-fix">[bugfix]</span></td>
+      <td class="tag-old">Patches prototype unconditionally on every load</td>
+      <td class="tag-new">Guards with <code>_chutyPatched</code> flag — safe to load multiple times</td>
+    </tr>
+    <tr>
+      <td>Tooltip <span class="tag-fix">[fix]</span></td>
+      <td class="tag-old">Uses leaked module-level cell refs — breaks with multiple charts</td>
+      <td class="tag-new">Cell refs scoped per tooltip instance</td>
+    </tr>
+    <tr>
+      <td>Font rendering <span class="tag-fix">[bugfix]</span></td>
+      <td class="tag-old"><code>context.font = 'Consolas'</code> (invalid — missing size)</td>
+      <td class="tag-new"><code>labelFont</code> option, default <code>'11px Consolas, monospace'</code></td>
+    </tr>
+    <tr>
+      <td>Interpolation flag</td>
+      <td class="tag-old"><code>datum.isInterpolate</code> (presence-check)</td>
+      <td class="tag-new"><code>datum.isInterpolated</code> (boolean, consistent)</td>
+    </tr>
+    <tr>
+      <td>Module format</td>
+      <td class="tag-old">Global <code>window.ChutyChart</code> only</td>
+      <td class="tag-new">UMD — works as CommonJS, ES import, or global</td>
+    </tr>
+  </table>
+
+  <h2 style="margin-top:24px;">Usage</h2>
+  <pre>
+<span class="cm">// ── v2 — named options, chainable instance ──────────────────</span>
+<span class="kw">const</span> chart = <span class="kw">new</span> ChutyChart({
+  container:   <span class="str">'chart'</span>,          <span class="cm">// DOM id</span>
+  data:        ohlcvArray,          <span class="cm">// see formats below</span>
+  height:      <span class="num">400</span>,
+  candleWidth: <span class="num">8</span>,
+  interpolate: <span class="kw">false</span>,
+  priceAreaRatio:            <span class="num">0.8</span>,  <span class="cm">// 80% price, 20% volume</span>
+  volumeThresholdMultiplier: <span class="num">2</span>,   <span class="cm">// outlier coloring</span>
+});
+chart.render();
+
+<span class="cm">// Live update</span>
+chart.update(newData);
+
+<span class="cm">// ── Accepted data formats ────────────────────────────────────</span>
+<span class="cm">// Short form (v1-compatible)</span>
+{ d: <span class="num">1700000000</span>, o: <span class="num">100</span>, h: <span class="num">105</span>, l: <span class="num">98</span>, c: <span class="num">103</span>, v: <span class="num">1200000</span> }
+
+<span class="cm">// Verbose form (new)</span>
+{ timestamp: <span class="num">1700000000000</span>, open: <span class="num">100</span>, high: <span class="num">105</span>,
+  low: <span class="num">98</span>, close: <span class="num">103</span>, volume: <span class="num">1200000</span> }
+
+<span class="cm">// Millisecond timestamps auto-converted ✓</span>
+</pre>
+</div>
+
+<script src="chutychart-v2.js"></script>
+<script>
+/* ─── Synthetic data generators ─────────────────────────── */
+
+function generateData(type, n) {
+  var now   = Math.floor(Date.now() / 1000);
+  var DAY   = 86400;
+  var start = now - n * DAY;
+  var data  = [];
+  var price = 100;
+
+  for (var i = 0; i < n; i++) {
+    var t = start + i * DAY;
+    // skip ~20% of weekends to create natural gaps (tests interpolation)
+    var dow = new Date(t * 1000).getDay();
+    if (dow === 0 || dow === 6) {
+      if (Math.random() < 0.9) continue;
+    }
+
+    var delta, vol;
+    if (type === 'sine') {
+      delta = Math.sin(i / 20) * 3 + (Math.random() - 0.48) * 2;
+    } else if (type === 'trend') {
+      delta = 0.25 + (Math.random() - 0.4) * 3;
+    } else {
+      delta = (Math.random() - 0.5) * 5;
+    }
+
+    price = Math.max(5, price + delta);
+
+    var open  = price;
+    var close = +(price + (Math.random() - 0.5) * 2).toFixed(2);
+    var high  = +(Math.max(open, close) + Math.random() * 2).toFixed(2);
+    var low   = +(Math.min(open, close) - Math.random() * 2).toFixed(2);
+    vol = Math.floor(500000 + Math.random() * 2000000);
+    // sprinkle volume spikes
+    if (Math.random() < 0.04) vol *= 5;
+
+    data.push({ d: t, o: open, h: high, l: low, c: close, v: vol });
+  }
+  return data;
+}
+
+/* ─── Chart instance ─────────────────────────────────────── */
+
+var chart = null;
+
+function renderChart() {
+  var height  = parseInt(document.getElementById('ctrl-height').value, 10) || 400;
+  var cw      = parseInt(document.getElementById('ctrl-cw').value, 10)     || 8;
+  var n       = parseInt(document.getElementById('ctrl-n').value, 10)      || 260;
+  var ds      = document.getElementById('ctrl-ds').value;
+  var interp  = document.getElementById('ctrl-interp').checked;
+
+  document.getElementById('chart').style.height = height + 'px';
+
+  var data = generateData(ds, n);
+
+  if (chart) {
+    chart.destroy();
+  }
+
+  chart = new ChutyChart({
+    container:   'chart',
+    data:        data,
+    height:      height,
+    candleWidth: cw,
+    interpolate: interp,
+  });
+
+  chart.render();
+}
+
+document.getElementById('btn-render').addEventListener('click', renderChart);
+
+// auto-render on load
+renderChart();
+</script>
+</body>
+</html>
